@@ -1,0 +1,81 @@
+package com.example.calculatorapp;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+    private TextView resultTextView;
+    private String currentNumber = "";
+    private String calculation = "";
+    private double num1, num2, result;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        resultTextView = findViewById(R.id.resultTextView);
+    }
+
+    public void onNumberClick(View view) {
+        if (calculation.isEmpty()) {
+            currentNumber += view.getTag().toString();
+        } else {
+            currentNumber = view.getTag().toString();
+            calculation = "";
+        }
+        resultTextView.setText(currentNumber);
+    }
+
+    public void onOperatorClick(View view) {
+        if (!currentNumber.isEmpty()) {
+            if (!calculation.isEmpty()) {
+                calculateResult();
+            }
+            calculation = view.getTag().toString();
+            num1 = Double.parseDouble(currentNumber);
+            currentNumber = "";
+        }
+    }
+
+    public void onEqualsClick(View view) {
+        if (!currentNumber.isEmpty() && !calculation.isEmpty()) {
+            calculateResult();
+            calculation = "";
+        }
+    }
+
+    public void onClearClick(View view) {
+        currentNumber = "";
+        calculation = "";
+        result = 0;
+        resultTextView.setText("0");
+    }
+
+    private void calculateResult() {
+        num2 = Double.parseDouble(currentNumber);
+        switch (calculation) {
+            case "+":
+                result = num1 + num2;
+                break;
+            case "-":
+                result = num1 - num2;
+                break;
+            case "*":
+                result = num1 * num2;
+                break;
+            case "/":
+                if (num2 != 0) {
+                    result = num1 / num2;
+                } else {
+                    resultTextView.setText("Error");
+                    return;
+                }
+                break;
+        }
+        resultTextView.setText(String.valueOf(result));
+        currentNumber = String.valueOf(result);
+    }
+}
